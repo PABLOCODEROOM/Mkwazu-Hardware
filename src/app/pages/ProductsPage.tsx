@@ -4,7 +4,7 @@ import { Spinner } from '../components/common/Spinner';
 import { mockProductService, mockCategoryService } from '../services/mockService';
 import { Product } from '../types/product';
 import { Category } from '../types/category';
-import { Filter } from 'lucide-react';
+import { Filter, Search, X } from 'lucide-react';
 
 export const ProductsPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -17,8 +17,33 @@ export const ProductsPage: React.FC = () => {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const category = params.get('category') || '';
+    const search = params.get('search') || '';
     setSelectedCategory(category);
+    setSearchTerm(search);
   }, []);
+
+  const updateUrl = (category: string, search: string) => {
+    const params = new URLSearchParams();
+    if (category) params.set('category', category);
+    if (search.trim()) params.set('search', search.trim());
+    const query = params.toString();
+    window.history.pushState({}, '', query ? `/bidhaa?${query}` : '/bidhaa');
+  };
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    updateUrl(category, searchTerm);
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateUrl(selectedCategory, searchTerm);
+  };
+
+  const clearSearch = () => {
+    setSearchTerm('');
+    updateUrl(selectedCategory, '');
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,6 +86,29 @@ export const ProductsPage: React.FC = () => {
           </button>
         </div>
 
+        <form onSubmit={handleSearchSubmit} className="mb-6 bg-white rounded-lg border p-3">
+          <div className="relative">
+            <Search className="absolute left-3 top-2.5 text-gray-400" size={20} />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              placeholder="Tafuta bidhaa kwa jina, maelezo au SKU..."
+              className="w-full pl-10 pr-12 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+            />
+            {searchTerm && (
+              <button
+                type="button"
+                onClick={clearSearch}
+                className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-700"
+                aria-label="Futa utafutaji"
+              >
+                <X size={20} />
+              </button>
+            )}
+          </div>
+        </form>
+
         <div className="flex gap-8">
           {/* Filters Sidebar */}
           <aside
@@ -71,7 +119,7 @@ export const ProductsPage: React.FC = () => {
             <h3 className="font-bold mb-4">Aina za Bidhaa</h3>
             <div className="space-y-2">
               <button
-                onClick={() => setSelectedCategory('')}
+                onClick={() => handleCategoryChange('')}
                 className={`block w-full text-left px-3 py-2 rounded ${
                   selectedCategory === '' ? 'bg-blue-100 text-blue-600 font-semibold' : 'hover:bg-gray-100'
                 }`}
@@ -81,7 +129,7 @@ export const ProductsPage: React.FC = () => {
               {categories.map(category => (
                 <button
                   key={category.id}
-                  onClick={() => setSelectedCategory(category.slug)}
+                  onClick={() => handleCategoryChange(category.slug)}
                   className={`block w-full text-left px-3 py-2 rounded ${
                     selectedCategory === category.slug
                       ? 'bg-blue-100 text-blue-600 font-semibold'
@@ -103,7 +151,9 @@ export const ProductsPage: React.FC = () => {
               </div>
             ) : products.length === 0 ? (
               <div className="text-center py-20">
-                <p className="text-gray-500 text-lg">Hakuna bidhaa zilizopatikana</p>
+                <p className="text-gray-500 text-lg">
+                  Hakuna bidhaa zilizopatikana{searchTerm ? ` kwa "${searchTerm}"` : ''}
+                </p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

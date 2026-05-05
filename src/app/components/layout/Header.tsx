@@ -14,7 +14,9 @@ export const Header: React.FC<HeaderProps> = ({ onSearch }) => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearch?.(searchTerm);
+    const term = searchTerm.trim();
+    onSearch?.(term);
+    window.location.href = term ? `/bidhaa?search=${encodeURIComponent(term)}` : '/bidhaa';
   };
 
   const itemCount = getItemCount();
@@ -26,7 +28,7 @@ export const Header: React.FC<HeaderProps> = ({ onSearch }) => {
           {/* Logo */}
           <a href="/" className="flex items-center">
             <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xl">V</span>
+              <span className="text-white font-bold text-xl">M</span>
             </div>
             <span className="ml-3 text-xl font-bold text-gray-900 hidden sm:block">
               {APP_NAME}
@@ -54,9 +56,6 @@ export const Header: React.FC<HeaderProps> = ({ onSearch }) => {
             </a>
             <a href="/bidhaa" className="text-gray-700 hover:text-blue-600 transition-colors">
               Bidhaa
-            </a>
-            <a href="/admin" className="text-gray-700 hover:text-blue-600 transition-colors">
-              Admin
             </a>
           </nav>
 
@@ -103,9 +102,6 @@ export const Header: React.FC<HeaderProps> = ({ onSearch }) => {
               </a>
               <a href="/bidhaa" className="text-gray-700 hover:text-blue-600">
                 Bidhaa
-              </a>
-              <a href="/admin" className="text-gray-700 hover:text-blue-600">
-                Admin
               </a>
             </nav>
           </div>

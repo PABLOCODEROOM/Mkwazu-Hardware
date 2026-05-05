@@ -109,11 +109,6 @@ function Router() {
                     Bidhaa
                   </a>
                 </li>
-                <li>
-                  <a href="/admin" className="text-gray-400 hover:text-white transition-colors">
-                    Admin
-                  </a>
-                </li>
               </ul>
             </div>
           </div>

@@ -1,0 +1,45 @@
+services:
+  - type: web
+    name: mkwazu-hardware-api
+    runtime: docker
+    rootDir: laravel-backend
+    plan: free
+    dockerCommand: php artisan serve --host=0.0.0.0 --port=$PORT
+    preDeployCommand: php artisan migrate --seed --force
+    envVars:
+      - key: APP_NAME
+        value: Mkwazu Hardware API
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: FRONTEND_URLS
+        sync: false
+      - key: APP_KEY
+        generateValue: true
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: mkwazu-hardware-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: mkwazu-hardware-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: mkwazu-hardware-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: mkwazu-hardware-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: mkwazu-hardware-db
+          property: password
+
+databases:
+  - name: mkwazu-hardware-db
+    plan: free
