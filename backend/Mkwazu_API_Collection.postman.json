@@ -1,0 +1,433 @@
+{
+  "info": {
+    "name": "Mkwazu Hardware API",
+    "description": "Complete API collection for construction materials e-commerce platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Public API",
+      "item": [
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/categories",
+              "host": ["{{base_url}}"],
+              "path": ["categories"]
+            }
+          }
+        },
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products?page=1&per_page=12",
+              "host": ["{{base_url}}"],
+              "path": ["products"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "per_page", "value": "12"},
+                {"key": "category", "value": "saruji", "disabled": true},
+                {"key": "search", "value": "", "disabled": true},
+                {"key": "min_price", "value": "", "disabled": true},
+                {"key": "max_price", "value": "", "disabled": true}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Featured Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/featured",
+              "host": ["{{base_url}}"],
+              "path": ["products", "featured"]
+            }
+          }
+        },
+        {
+          "name": "Get Single Product",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/saruji-mtwara-325",
+              "host": ["{{base_url}}"],
+              "path": ["products", "saruji-mtwara-325"]
+            }
+          }
+        },
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_name\": \"John Mwangi\",\n  \"customer_phone\": \"+255712345678\",\n  \"customer_email\": \"john@example.com\",\n  \"delivery_address\": \"Kimara, Plot 123, Dar es Salaam\",\n  \"delivery_region\": \"Dar es Salaam\",\n  \"delivery_district\": \"Kinondoni\",\n  \"payment_method\": \"cash_on_delivery\",\n  \"notes\": \"Tafadhali piga simu kabla ya kufika\",\n  \"items\": [\n    {\n      \"product_id\": 1,\n      \"quantity\": 10\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/orders",
+              "host": ["{{base_url}}"],
+              "path": ["orders"]
+            }
+          }
+        },
+        {
+          "name": "Track Order",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/orders/ORD-20260504-0001?phone=+255712345678",
+              "host": ["{{base_url}}"],
+              "path": ["orders", "ORD-20260504-0001"],
+              "query": [
+                {"key": "phone", "value": "+255712345678"}
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin - Authentication",
+      "item": [
+        {
+          "name": "Admin Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.token) {",
+                  "    pm.environment.set('admin_token', jsonData.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@mkwazuhardware.co.tz\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/login",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{admin_token}}"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/user",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "user"]
+            }
+          }
+        },
+        {
+          "name": "Admin Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{admin_token}}"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/logout",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin - Dashboard",
+      "item": [
+        {
+          "name": "Get Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{admin_token}}"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/dashboard/stats",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "dashboard", "stats"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin - Products",
+      "item": [
+        {
+          "name": "Get All Products (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{admin_token}}"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/products?page=1&per_page=15",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "products"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "per_page", "value": "15"},
+                {"key": "search", "value": "", "disabled": true},
+                {"key": "category", "value": "", "disabled": true}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{admin_token}}"}
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "category_id", "value": "1", "type": "text"},
+                {"key": "name", "value": "Bidhaa Mpya", "type": "text"},
+                {"key": "description", "value": "Maelezo ya bidhaa", "type": "text"},
+                {"key": "short_description", "value": "Maelezo mafupi", "type": "text"},
+                {"key": "price", "value": "50000", "type": "text"},
+                {"key": "unit", "value": "kipande", "type": "text"},
+                {"key": "stock_quantity", "value": "100", "type": "text"},
+                {"key": "is_featured", "value": "true", "type": "text"},
+                {"key": "images[]", "type": "file", "src": []}
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/products",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "products"]
+            }
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{admin_token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category_id\": 1,\n  \"name\": \"Bidhaa Iliyobadilishwa\",\n  \"description\": \"Maelezo mapya\",\n  \"price\": 55000,\n  \"stock_quantity\": 150\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/products/1",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "products", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{admin_token}}"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/products/1",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "products", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin - Categories",
+      "item": [
+        {
+          "name": "Get All Categories (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{admin_token}}"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/categories",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "categories"]
+            }
+          }
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{admin_token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Aina Mpya\",\n  \"description\": \"Maelezo ya aina\",\n  \"display_order\": 9\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/categories",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "categories"]
+            }
+          }
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{admin_token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Aina Iliyobadilishwa\",\n  \"description\": \"Maelezo mapya\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/categories/1",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "categories", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{admin_token}}"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/categories/1",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "categories", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin - Orders",
+      "item": [
+        {
+          "name": "Get All Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{admin_token}}"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/orders?page=1&per_page=20",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "orders"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "per_page", "value": "20"},
+                {"key": "status", "value": "", "disabled": true},
+                {"key": "search", "value": "", "disabled": true}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Order Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{admin_token}}"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/orders/1",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "orders", "1"]
+            }
+          }
+        },
+        {
+          "name": "Update Order Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{admin_token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order_status\": \"confirmed\",\n  \"admin_notes\": \"Oda imethibitishwa\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/orders/1/status",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "orders", "1", "status"]
+            }
+          }
+        },
+        {
+          "name": "Update Payment Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{admin_token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payment_status\": \"paid\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/orders/1/payment",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "orders", "1", "payment"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
