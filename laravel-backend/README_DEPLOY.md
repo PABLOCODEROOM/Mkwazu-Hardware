@@ -33,7 +33,12 @@ Create a Render Web Service from this repository and set:
 Root Directory: laravel-backend
 Runtime: Docker
 Start Command / Docker Command: php artisan serve --host=0.0.0.0 --port=$PORT
-Pre-Deploy Command: php artisan migrate --seed --force
+```
+
+Free-tier Render services do not support pre-deploy commands. After the first backend deploy, open the backend service Shell and run:
+
+```bash
+php artisan migrate --seed --force
 ```
 
 Environment variables:

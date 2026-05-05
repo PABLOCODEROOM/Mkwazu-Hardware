@@ -20,7 +20,6 @@ services:
     plan: free
     healthCheckPath: /up
     dockerCommand: php artisan serve --host=0.0.0.0 --port=$PORT
-    preDeployCommand: php artisan migrate --seed --force
     envVars:
       - key: APP_NAME
         value: Mkwazu Hardware API
