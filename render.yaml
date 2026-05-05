@@ -1,9 +1,24 @@
 services:
   - type: web
+    name: mkwazu-hardware-frontend
+    runtime: static
+    plan: free
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        sync: false
+
+  - type: web
     name: mkwazu-hardware-api
     runtime: docker
     rootDir: laravel-backend
     plan: free
+    healthCheckPath: /up
     dockerCommand: php artisan serve --host=0.0.0.0 --port=$PORT
     preDeployCommand: php artisan migrate --seed --force
     envVars:
