@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\OrderController;
@@ -18,6 +19,27 @@ use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 
 // Public API Routes
 Route::prefix('v1')->group(function () {
+
+    Route::get('health', function () {
+        try {
+            DB::connection()->getPdo();
+
+            return response()->json([
+                'success' => true,
+                'status' => 'ok',
+                'database' => 'connected',
+                'timestamp' => now()->toISOString(),
+            ]);
+        } catch (Throwable $error) {
+            return response()->json([
+                'success' => false,
+                'status' => 'error',
+                'database' => 'disconnected',
+                'message' => $error->getMessage(),
+                'timestamp' => now()->toISOString(),
+            ], 500);
+        }
+    });
 
     // Categories
     Route::get('categories', [CategoryController::class, 'index']);
