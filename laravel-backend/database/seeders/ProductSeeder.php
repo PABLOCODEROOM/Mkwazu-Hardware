@@ -184,17 +184,24 @@ class ProductSeeder extends Seeder
             $images = $productData['images'];
             unset($productData['images']);
 
-            $product = Product::create($productData);
+            $product = Product::updateOrCreate(
+                ['slug' => $productData['slug']],
+                $productData
+            );
 
             // Add images
             foreach ($images as $index => $imageUrl) {
-                ProductImage::create([
-                    'product_id' => $product->id,
-                    'image_url' => $imageUrl,
-                    'alt_text' => $product->name,
-                    'display_order' => $index,
-                    'is_primary' => $index === 0,
-                ]);
+                ProductImage::updateOrCreate(
+                    [
+                        'product_id' => $product->id,
+                        'image_url' => $imageUrl,
+                    ],
+                    [
+                        'alt_text' => $product->name,
+                        'display_order' => $index,
+                        'is_primary' => $index === 0,
+                    ]
+                );
             }
         }
     }
