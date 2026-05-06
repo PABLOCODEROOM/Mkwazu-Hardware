@@ -38,8 +38,10 @@ Start Command / Docker Command: sh ./render-start.sh
 Free-tier Render services do not support pre-deploy commands, and Shell may require billing on some accounts. The Docker startup script runs this automatically:
 
 ```bash
-php artisan migrate --seed --force
+php artisan mkwazu:boot
 ```
+
+That command runs migrations and only seeds the database when there are no products yet.
 
 Environment variables:
 
