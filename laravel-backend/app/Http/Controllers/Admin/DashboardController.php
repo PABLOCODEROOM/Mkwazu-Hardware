@@ -44,12 +44,11 @@ class DashboardController extends Controller
         $revenueChart = DB::table('orders')
             ->select(
                 DB::raw("TO_CHAR(created_at, 'Mon') as month"),
-                DB::raw('SUM(total) as revenue'),
-                DB::raw('MIN(created_at) as first_of_month')
+                DB::raw('SUM(total) as revenue')
             )
             ->where('created_at', '>=', now()->subMonths(5))
-            ->groupBy('month')
-            ->orderBy('first_of_month')
+            ->groupBy(DB::raw("TO_CHAR(created_at, 'Mon'), DATE_TRUNC('month', created_at)"))
+            ->orderBy(DB::raw("DATE_TRUNC('month', created_at)"))
             ->get();
 
         return response()->json([
