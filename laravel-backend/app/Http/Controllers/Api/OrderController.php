@@ -48,8 +48,10 @@ class OrderController extends Controller
                     'subtotal' => $itemSubtotal,
                 ];
 
-                // Decrease stock
-                $product->decreaseStock($item['quantity']);
+                // Decrease stock and check if successful
+                if (!$product->decreaseStock($item['quantity'])) {
+                    throw new \Exception("Samahani, {$product->name} haina stock ya kutosha");
+                }
             }
 
             // Create order

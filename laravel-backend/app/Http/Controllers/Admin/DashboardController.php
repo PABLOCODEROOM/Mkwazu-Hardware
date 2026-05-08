@@ -40,14 +40,16 @@ class DashboardController extends Controller
             ->get();
 
         // Revenue chart (last 5 months)
+        // Using TO_CHAR for PostgreSQL compatibility (Render uses Postgres)
         $revenueChart = DB::table('orders')
             ->select(
-                DB::raw('DATE_FORMAT(created_at, "%b") as month'),
-                DB::raw('SUM(total) as revenue')
+                DB::raw("TO_CHAR(created_at, 'Mon') as month"),
+                DB::raw('SUM(total) as revenue'),
+                DB::raw('MIN(created_at) as first_of_month')
             )
             ->where('created_at', '>=', now()->subMonths(5))
             ->groupBy('month')
-            ->orderBy(DB::raw('MIN(created_at)'))
+            ->orderBy('first_of_month')
             ->get();
 
         return response()->json([

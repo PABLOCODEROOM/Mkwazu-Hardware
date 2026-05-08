@@ -84,7 +84,13 @@ class Product extends Model
      */
     public function getPrimaryImageAttribute(): ?string
     {
-        $primaryImage = $this->images()->where('is_primary', true)->first();
+        // Use already loaded relationship to avoid N+1 queries
+        if ($this->relationLoaded('images')) {
+            $primaryImage = $this->images->where('is_primary', true)->first();
+        } else {
+            $primaryImage = $this->images()->where('is_primary', true)->first();
+        }
+
         return $primaryImage ? $primaryImage->image_url : null;
     }
 
@@ -117,11 +123,14 @@ class Product extends Model
      */
     public function scopeSearch($query, $term)
     {
-        return $query->where(function ($q) use ($term) {
-            $q->where('name', 'like', "%{$term}%")
-              ->orWhere('description', 'like', "%{$term}%")
-              ->orWhere('short_description', 'like', "%{$term}%")
-              ->orWhere('sku', 'like', "%{$term}%");
+        // Using ilike for case-insensitive search in PostgreSQL
+        $like = config('database.default') === 'pgsql' ? 'ilike' : 'like';
+
+        return $query->where(function ($q) use ($term, $like) {
+            $q->where('name', $like, "%{$term}%")
+              ->orWhere('description', $like, "%{$term}%")
+              ->orWhere('short_description', $like, "%{$term}%")
+              ->orWhere('sku', $like, "%{$term}%");
         });
     }
 
