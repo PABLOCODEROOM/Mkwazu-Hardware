@@ -3,7 +3,11 @@ import { useAuth } from '../../context/AuthContext';
 import { Spinner } from '../../components/common/Spinner';
 import { Lock } from 'lucide-react';
 
-export const AdminLoginPage: React.FC = () => {
+interface AdminLoginPageProps {
+  onLogin?: () => void;
+}
+
+export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onLogin }) => {
   const { login, isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -12,7 +16,11 @@ export const AdminLoginPage: React.FC = () => {
 
   // Redirect if already authenticated
   if (!isAuthLoading && isAuthenticated) {
-    window.location.href = '/admin/dashibodi';
+    if (onLogin) {
+      onLogin();
+    } else {
+      window.location.href = '/admin/dashibodi';
+    }
     return null;
   }
 
@@ -31,7 +39,11 @@ export const AdminLoginPage: React.FC = () => {
 
     try {
       await login({ email, password });
-      window.location.href = '/admin/dashibodi';
+      if (onLogin) {
+        onLogin();
+      } else {
+        window.location.href = '/admin/dashibodi';
+      }
     } catch (err: any) {
       setError(err.message || 'Barua pepe au nywila si sahihi');
     } finally {
@@ -59,7 +71,7 @@ export const AdminLoginPage: React.FC = () => {
               value={email}
               onChange={e => setEmail(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-              placeholder="admin@vifaa.co.tz"
+              placeholder="admin@mkwazuhardware.co.tz"
             />
           </div>
 
@@ -92,7 +104,7 @@ export const AdminLoginPage: React.FC = () => {
 
         <div className="mt-6 p-4 bg-blue-50 rounded-lg text-sm text-gray-700">
           <p className="font-semibold mb-1">Demo Credentials:</p>
-          <p>Email: admin@vifaa.co.tz</p>
+          <p>Email: admin@mkwazuhardware.co.tz</p>
           <p>Password: admin123</p>
         </div>
       </div>

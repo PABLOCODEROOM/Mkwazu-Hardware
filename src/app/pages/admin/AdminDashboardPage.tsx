@@ -32,7 +32,11 @@ interface PosItem {
   quantity: number;
 }
 
-export const AdminDashboardPage: React.FC = () => {
+interface AdminDashboardPageProps {
+  onLogout?: () => void;
+}
+
+export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onLogout }) => {
   const { user, logout, isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const [activeTab, setActiveTab] = useState<AdminTab>('overview');
   const [orders, setOrders] = useState<Order[]>([]);
@@ -45,7 +49,11 @@ export const AdminDashboardPage: React.FC = () => {
   const [checkoutNote, setCheckoutNote] = useState('');
 
   if (!isAuthLoading && !isAuthenticated) {
-    window.location.href = '/admin';
+    if (onLogout) {
+      onLogout();
+    } else {
+      window.location.href = '/admin';
+    }
     return null;
   }
 
@@ -68,7 +76,7 @@ export const AdminDashboardPage: React.FC = () => {
     };
 
     fetchData();
-  }, []);
+  }, [isAuthenticated, isAuthLoading]);
 
   const stats = useMemo(() => {
     const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0);
@@ -128,7 +136,11 @@ export const AdminDashboardPage: React.FC = () => {
 
   const handleLogout = () => {
     logout();
-    window.location.href = '/admin';
+    if (onLogout) {
+      onLogout();
+    } else {
+      window.location.href = '/admin';
+    }
   };
 
   const getStatusVariant = (status: string): BadgeVariant => {

@@ -26,7 +26,17 @@ api.interceptors.request.use((config) => {
 
 // Response interceptor for error handling
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Detect if the response is actually HTML (happens if VITE_API_URL is wrong)
+    const contentType = response.headers['content-type'];
+    if (contentType && contentType.includes('text/html')) {
+      return Promise.reject({
+        message: 'API returned HTML instead of JSON. Please check VITE_API_URL configuration.',
+        response
+      });
+    }
+    return response;
+  },
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('vifaa_auth_token');

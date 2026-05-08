@@ -59,11 +59,11 @@ function Router() {
 
   // Admin routes
   if (path === '/admin') {
-    return <AdminLoginPage />;
+    return <AdminLoginPage onLogin={() => window.history.pushState({}, '', '/admin/dashibodi')} />;
   }
 
   if (path === '/admin/dashibodi') {
-    return <AdminDashboardPage />;
+    return <AdminDashboardPage onLogout={() => window.history.pushState({}, '', '/admin')} />;
   }
 
   // Client routes with layout
