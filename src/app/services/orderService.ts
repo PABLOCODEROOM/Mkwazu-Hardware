@@ -36,8 +36,20 @@ export const orderService = {
   // Admin methods
   getAll: async (params?: any): Promise<{ data: Order[]; meta: any }> => {
     const response = await api.get('/admin/orders', { params });
+    const data = response.data.data.map((order: any) => ({
+      ...order,
+      total: Number(order.total),
+      subtotal: Number(order.subtotal),
+      delivery_fee: Number(order.delivery_fee),
+      items: order.items?.map((item: any) => ({
+        ...item,
+        unit_price: Number(item.unit_price),
+        subtotal: Number(item.subtotal),
+      })),
+    }));
+
     return {
-      data: response.data.data,
+      data,
       meta: response.data.meta,
     };
   },

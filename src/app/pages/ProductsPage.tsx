@@ -16,11 +16,17 @@ export const ProductsPage: React.FC = () => {
   const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const category = params.get('category') || '';
-    const search = params.get('search') || '';
-    setSelectedCategory(category);
-    setSearchTerm(search);
+    const handleUrlChange = () => {
+      const params = new URLSearchParams(window.location.search);
+      const category = params.get('category') || '';
+      const search = params.get('search') || '';
+      setSelectedCategory(category);
+      setSearchTerm(search);
+    };
+
+    handleUrlChange();
+    window.addEventListener('popstate', handleUrlChange);
+    return () => window.removeEventListener('popstate', handleUrlChange);
   }, []);
 
   const updateUrl = (category: string, search: string) => {

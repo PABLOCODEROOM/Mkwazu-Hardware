@@ -16,7 +16,12 @@ function useRouter() {
 
   useEffect(() => {
     const handleNavigation = () => {
-      setPath(window.location.pathname);
+      // Normalize path by removing trailing slash if not root
+      let currentPath = window.location.pathname;
+      if (currentPath !== '/' && currentPath.endsWith('/')) {
+        currentPath = currentPath.slice(0, -1);
+      }
+      setPath(currentPath);
     };
 
     window.addEventListener('popstate', handleNavigation);
@@ -29,8 +34,12 @@ function useRouter() {
       if (anchor && anchor.href && anchor.href.startsWith(window.location.origin)) {
         e.preventDefault();
         const url = new URL(anchor.href);
-        window.history.pushState({}, '', url.pathname + url.search);
-        setPath(url.pathname);
+        let targetPath = url.pathname;
+        if (targetPath !== '/' && targetPath.endsWith('/')) {
+          targetPath = targetPath.slice(0, -1);
+        }
+        window.history.pushState({}, '', targetPath + url.search);
+        setPath(targetPath);
       }
     };
 

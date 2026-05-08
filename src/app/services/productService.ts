@@ -30,7 +30,17 @@ export const productService = {
   getBySlug: async (slug: string): Promise<Product | null> => {
     try {
       const response = await api.get(`/products/${slug}`);
-      return response.data.data;
+      const p = response.data.data;
+      return {
+        ...p,
+        price: Number(p.price),
+        compare_price: p.compare_price ? Number(p.compare_price) : undefined,
+        related_products: p.related_products?.map((rp: any) => ({
+          ...rp,
+          price: Number(rp.price),
+          compare_price: rp.compare_price ? Number(rp.compare_price) : undefined,
+        })),
+      };
     } catch (error) {
       console.error('Error fetching product by slug:', error);
       return null;
@@ -49,8 +59,14 @@ export const productService = {
   // Admin methods
   adminGetAll: async (params?: any): Promise<{ data: Product[]; meta: any }> => {
     const response = await api.get('/admin/products', { params });
+    const data = response.data.data.map((p: any) => ({
+      ...p,
+      price: Number(p.price),
+      compare_price: p.compare_price ? Number(p.compare_price) : undefined,
+    }));
+
     return {
-      data: response.data.data,
+      data,
       meta: response.data.meta,
     };
   },
