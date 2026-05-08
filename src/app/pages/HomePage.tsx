@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ProductCard } from '../components/client/ProductCard';
 import { Spinner } from '../components/common/Spinner';
-import { mockCategoryService, mockProductService } from '../services/mockService';
+import { productService } from '../services/productService';
+import { categoryService } from '../services/categoryService';
 import { Product } from '../types/product';
 import { Category } from '../types/category';
 import { ArrowRight, Package } from 'lucide-react';
@@ -15,8 +16,8 @@ export const HomePage: React.FC = () => {
     const fetchData = async () => {
       try {
         const [products, cats] = await Promise.all([
-          mockProductService.getFeatured(),
-          mockCategoryService.getAll(),
+          productService.getFeatured(),
+          categoryService.getAll(),
         ]);
         setFeaturedProducts(products);
         setCategories(cats);

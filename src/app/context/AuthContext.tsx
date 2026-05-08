@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User, LoginCredentials } from '../types/user';
-import { mockAuthService } from '../services/mockService';
+import { authService } from '../services/authService';
 
 interface AuthContextType {
   user: User | null;
@@ -41,7 +41,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, []);
 
   const login = async (credentials: LoginCredentials) => {
-    const response = await mockAuthService.login(credentials);
+    const response = await authService.login(credentials);
     setUser(response.user);
     setToken(response.token);
 
@@ -49,11 +49,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(response.user));
   };
 
-  const logout = () => {
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem(AUTH_STORAGE_KEY);
-    localStorage.removeItem(USER_STORAGE_KEY);
+  const logout = async () => {
+    try {
+      await authService.logout();
+    } catch (e) {
+      console.error('Logout error:', e);
+    } finally {
+      setUser(null);
+      setToken(null);
+      localStorage.removeItem(AUTH_STORAGE_KEY);
+      localStorage.removeItem(USER_STORAGE_KEY);
+    }
   };
 
   return (

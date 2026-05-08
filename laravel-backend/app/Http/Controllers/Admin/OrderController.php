@@ -29,10 +29,12 @@ class OrderController extends Controller
         // Search
         if ($request->has('search') && $request->search) {
             $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('order_number', 'like', "%{$search}%")
-                  ->orWhere('customer_name', 'like', "%{$search}%")
-                  ->orWhere('customer_phone', 'like', "%{$search}%");
+            $like = config('database.default') === 'pgsql' ? 'ilike' : 'like';
+
+            $query->where(function ($q) use ($search, $like) {
+                $q->where('order_number', $like, "%{$search}%")
+                  ->orWhere('customer_name', $like, "%{$search}%")
+                  ->orWhere('customer_phone', $like, "%{$search}%");
             });
         }
 

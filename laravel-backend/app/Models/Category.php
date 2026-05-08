@@ -51,6 +51,16 @@ class Category extends Model
      */
     public function getProductCountAttribute(): int
     {
+        // Use products_count if it was eager loaded via withCount()
+        if (isset($this->attributes['products_count'])) {
+            return (int) $this->attributes['products_count'];
+        }
+
+        // Otherwise use the relation if it's already loaded
+        if ($this->relationLoaded('products')) {
+            return $this->products->where('is_active', true)->count();
+        }
+
         return $this->products()->where('is_active', true)->count();
     }
 

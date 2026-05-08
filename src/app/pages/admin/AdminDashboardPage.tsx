@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { mockOrderService, mockProductService } from '../../services/mockService';
+import { orderService } from '../../services/orderService';
+import { productService } from '../../services/productService';
 import { formatCurrency } from '../../utils/formatCurrency';
 import { formatDate } from '../../utils/formatDate';
 import { Badge } from '../../components/common/Badge';
@@ -52,11 +53,11 @@ export const AdminDashboardPage: React.FC = () => {
     const fetchData = async () => {
       try {
         const [ordersData, productsData] = await Promise.all([
-          mockOrderService.getAll(),
-          mockProductService.getAll({ per_page: 100 }),
+          orderService.getAll(),
+          productService.adminGetAll({ per_page: 100 }),
         ]);
 
-        setOrders(ordersData);
+        setOrders(ordersData.data);
         setProducts(productsData.data);
       } catch (error) {
         console.error('Error fetching admin data:', error);
@@ -215,7 +216,7 @@ export const AdminDashboardPage: React.FC = () => {
   };
 
   const updateOrderStatus = async (id: number, status: OrderStatus) => {
-    await mockOrderService.updateStatus(id, status);
+    await orderService.updateStatus(id, status);
     setOrders(current =>
       current.map(order =>
         order.id === id ? { ...order, order_status: status } : order
