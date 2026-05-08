@@ -15,8 +15,14 @@ export const productService = {
     }
 
     const response = await api.get('/products', { params });
+    const data = response.data.data.map((p: any) => ({
+      ...p,
+      price: Number(p.price),
+      compare_price: p.compare_price ? Number(p.compare_price) : undefined,
+    }));
+
     return {
-      data: response.data.data,
+      data,
       total: response.data.meta.total_items,
     };
   },
@@ -33,7 +39,11 @@ export const productService = {
 
   getFeatured: async (): Promise<Product[]> => {
     const response = await api.get('/products/featured');
-    return response.data.data;
+    return response.data.data.map((p: any) => ({
+      ...p,
+      price: Number(p.price),
+      compare_price: p.compare_price ? Number(p.compare_price) : undefined,
+    }));
   },
 
   // Admin methods

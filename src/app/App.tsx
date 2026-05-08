@@ -8,6 +8,7 @@ import { ProductsPage } from './pages/ProductsPage';
 import { CheckoutPage } from './pages/CheckoutPage';
 import { AdminLoginPage } from './pages/admin/AdminLoginPage';
 import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
+import { ErrorBoundary } from './components/common/ErrorBoundary';
 
 // Simple client-side router
 function useRouter() {
@@ -123,10 +124,12 @@ function Router() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <Router />
-      </CartProvider>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <CartProvider>
+          <Router />
+        </CartProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }

@@ -33,7 +33,7 @@ interface PosItem {
 }
 
 export const AdminDashboardPage: React.FC = () => {
-  const { user, logout, isAuthenticated } = useAuth();
+  const { user, logout, isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const [activeTab, setActiveTab] = useState<AdminTab>('overview');
   const [orders, setOrders] = useState<Order[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
@@ -44,12 +44,13 @@ export const AdminDashboardPage: React.FC = () => {
   const [posCart, setPosCart] = useState<PosItem[]>([]);
   const [checkoutNote, setCheckoutNote] = useState('');
 
-  if (!isAuthenticated) {
+  if (!isAuthLoading && !isAuthenticated) {
     window.location.href = '/admin';
     return null;
   }
 
   useEffect(() => {
+    if (isAuthLoading || !isAuthenticated) return;
     const fetchData = async () => {
       try {
         const [ordersData, productsData] = await Promise.all([

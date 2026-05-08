@@ -4,16 +4,24 @@ import { Spinner } from '../../components/common/Spinner';
 import { Lock } from 'lucide-react';
 
 export const AdminLoginPage: React.FC = () => {
-  const { login, isAuthenticated } = useAuth();
+  const { login, isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   // Redirect if already authenticated
-  if (isAuthenticated) {
+  if (!isAuthLoading && isAuthenticated) {
     window.location.href = '/admin/dashibodi';
     return null;
+  }
+
+  if (isAuthLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center p-4">
+        <Spinner size="lg" />
+      </div>
+    );
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
