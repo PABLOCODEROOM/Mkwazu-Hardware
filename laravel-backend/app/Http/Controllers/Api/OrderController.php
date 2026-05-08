@@ -50,7 +50,10 @@ class OrderController extends Controller
 
                 // Decrease stock and check if successful
                 if (!$product->decreaseStock($item['quantity'])) {
-                    throw new \Exception("Samahani, {$product->name} haina stock ya kutosha");
+                    return response()->json([
+                        'success' => false,
+                        'message' => "Samahani, {$product->name} haina stock ya kutosha",
+                    ], 422);
                 }
             }
 

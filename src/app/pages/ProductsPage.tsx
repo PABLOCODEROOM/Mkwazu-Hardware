@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ProductCard } from '../components/client/ProductCard';
 import { Spinner } from '../components/common/Spinner';
-import { mockProductService, mockCategoryService } from '../services/mockService';
+import { productService } from '../services/productService';
+import { categoryService } from '../services/categoryService';
 import { Product } from '../types/product';
 import { Category } from '../types/category';
 import { Filter, Search, X } from 'lucide-react';
@@ -50,11 +51,11 @@ export const ProductsPage: React.FC = () => {
       setLoading(true);
       try {
         const [productsData, cats] = await Promise.all([
-          mockProductService.getAll({
+          productService.getAll({
             category: selectedCategory || undefined,
             search: searchTerm || undefined,
           }),
-          mockCategoryService.getAll(),
+          categoryService.getAll(),
         ]);
         setProducts(productsData.data);
         setCategories(cats);

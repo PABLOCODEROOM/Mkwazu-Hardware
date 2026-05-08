@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { formatCurrency } from '../utils/formatCurrency';
 import { DEFAULT_DELIVERY_FEE, REGIONS, PAYMENT_METHOD_LABELS } from '../utils/constants';
-import { mockOrderService } from '../services/mockService';
+import { orderService } from '../services/orderService';
 import { CreateOrderData, PaymentMethod } from '../types/order';
 import { Spinner } from '../components/common/Spinner';
 import { CheckCircle, ArrowLeft } from 'lucide-react';
@@ -39,7 +39,7 @@ export const CheckoutPage: React.FC = () => {
         })),
       };
 
-      const result = await mockOrderService.create(orderData);
+      const result = await orderService.create(orderData);
       setOrderNumber(result.order_number);
       setOrderPlaced(true);
       clearCart();
