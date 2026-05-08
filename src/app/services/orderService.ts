@@ -15,7 +15,18 @@ export const orderService = {
       const response = await api.get(`/orders/${orderNumber}`, {
         params: { phone }
       });
-      return response.data.data;
+      const order = response.data.data;
+      return {
+        ...order,
+        total: Number(order.total),
+        subtotal: Number(order.subtotal),
+        delivery_fee: Number(order.delivery_fee),
+        items: order.items.map((item: any) => ({
+          ...item,
+          unit_price: Number(item.unit_price),
+          subtotal: Number(item.subtotal),
+        })),
+      };
     } catch (error) {
       console.error('Error fetching order:', error);
       return null;

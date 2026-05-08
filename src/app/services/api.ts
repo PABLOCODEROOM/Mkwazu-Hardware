@@ -1,6 +1,10 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api/v1' : 'http://localhost:8000/api/v1');
+
+if (import.meta.env.PROD && !import.meta.env.VITE_API_URL) {
+  console.warn('VITE_API_URL is not set in production. Falling back to relative path /api/v1');
+}
 
 const api = axios.create({
   baseURL: API_URL,
