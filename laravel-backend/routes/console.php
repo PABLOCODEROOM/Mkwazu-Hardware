@@ -10,6 +10,7 @@ Artisan::command('inspire', function () {
 
 Artisan::command('mkwazu:boot', function () {
     $this->call('migrate', ['--force' => true]);
+    $this->call('storage:link', []);
 
     $hasProducts = false;
 
